@@ -1,12 +1,15 @@
 defmodule Identicon do
   def main do
-    str = "Elixir"
-    image = hash_input(str)
+    name = IO.gets("name: ")
+      |>String.trim()
+
+    image = hash_input(name)
     |> pick_color()
     |> build_grid()
-    # |> filter_add_cells()
-    # |> build_pixel_map()
-    # |> build_image()
+    |> filter_add_cells()
+    |> build_pixel_map()
+    |> build_image()
+    |> :egd.save("#{name}.png")
   end
 
   def hash_input(str) do
@@ -39,9 +42,9 @@ defmodule Identicon do
     row ++ reversed_row
   end
 
-  def filter_add_cells(list) do
-    grid = Enum.filter(list, &rem(elem(&1, 0), 2) == 0)
-    %Identicon.Image{grid: grid}
+  def filter_add_cells(%Identicon.Image{grid: grid} = image) do
+    grid = Enum.filter(grid, &rem(elem(&1, 0), 2) == 0)
+    %Identicon.Image{image | grid: grid}
   end
 
   def build_pixel_map(%Identicon.Image{grid: grid} = image) do
@@ -61,4 +64,5 @@ defmodule Identicon do
       end)
       :egd.render(img)
     end
+
 end
