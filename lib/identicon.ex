@@ -2,7 +2,11 @@ defmodule Identicon do
   def main do
     str = "Elixir"
     image = hash_input(str)
-    pick_color(image)
+    |> pick_color()
+    |> build_grid()
+    # |> filter_add_cells()
+    # |> build_pixel_map()
+    # |> build_image()
   end
 
   def hash_input(str) do
@@ -13,16 +17,18 @@ defmodule Identicon do
   end
 
   def pick_color(%Identicon.Image{hex: [r, g, b | _tail ]} = image) do
-    %Identicon.Image{image | color: [r, g, b]}
+    %Identicon.Image{image | color: {r, g, b}}
   end
 
-  def build_grid(list) do
-    list
-    |> Enum.drop(-1)
-    |> Enum.chunk_every(3)
-    |> Enum.map(&mirror_row(&1))
-    |> List.flatten()
-    |> Enum.with_index()
+  def build_grid(%Identicon.Image{hex: list} = image) do
+    list =
+      list
+      |>Enum.drop(-1)
+      |> Enum.chunk_every(3)
+      |> Enum.map(&mirror_row(&1))
+      |> List.flatten()
+      |> Enum.with_index()
+    %Identicon.Image{image | grid: list}
   end
 
   def mirror_row(row) do
@@ -47,13 +53,12 @@ defmodule Identicon do
     %Identicon.Image{image | pixel_map: pixel_map }
     end
 
-    def build_image(color, pixel_map) do
-      # %Identicon.Image{color: color, pixel_map: pixel_map}
+    def build_image(%Identicon.Image{color: color, pixel_map: pixel_map}) do
       img = :egd.create(250, 250)
       fill = :egd.color(color)
-      Enum.each pixel_map, fn({start, stop}) ->
+      Enum.each(pixel_map, fn({start, stop}) ->
         :egd.filledRectangle(img, start, stop, fill)
-      end
+      end)
       :egd.render(img)
     end
 end
