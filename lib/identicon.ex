@@ -17,6 +17,23 @@ defmodule Identicon do
   end
 
   def build_grid(list) do
-    Enum.drop(list, -1)
+    list
+    |> Enum.drop(-1)
+    |> Enum.chunk_every(3)
+    |> Enum.map(&mirror_row(&1))
+    |> List.flatten()
+    |> Enum.with_index()
+  end
+
+  def mirror_row(row) do
+    reversed_row =
+    row
+    |> Enum.reverse()
+    |> Enum.drop(1)
+    row ++ reversed_row
+  end
+
+  def filter_add_cells(list) do
+    Enum.filter(list, &rem(elem(&1, 0), 2) == 0)
   end
 end
