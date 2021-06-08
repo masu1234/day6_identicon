@@ -34,18 +34,26 @@ defmodule Identicon do
   end
 
   def filter_add_cells(list) do
-    Enum.filter(list, &rem(elem(&1, 0), 2) == 0)
+    grid = Enum.filter(list, &rem(elem(&1, 0), 2) == 0)
+    %Identicon.Image{grid: grid}
   end
 
-  def build_pixel_map(grid) do
-    #%Identicon.Image{grid: grid} = image
-    pixcel_map =
+  def build_pixel_map(%Identicon.Image{grid: grid} = image) do
+    pixel_map =
           Enum.map(grid, fn({_code, index}) ->
-            {top_left, bottom_right} =
-               {{rem(index,5)*50, div(index, 5)*50},{rem(index,5)*50+50, div(index, 5)*50+50}}
+            # {top_left, bottom_right} =
+              {{rem(index,5)*50, div(index, 5)*50},{rem(index,5)*50+50, div(index, 5)*50+50}}
           end)
-    #%Identicon.Image{image | pixcel_map: pixcel_map }
+    %Identicon.Image{image | pixel_map: pixel_map }
     end
 
-
+    def build_image(color, pixel_map) do
+      # %Identicon.Image{color: color, pixel_map: pixel_map}
+      img = :egd.create(250, 250)
+      fill = :egd.color(color)
+      Enum.each pixel_map, fn({start, stop}) ->
+        :egd.filledRectangle(img, start, stop, fill)
+      end
+      :egd.render(img)
+    end
 end
