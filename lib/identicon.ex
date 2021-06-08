@@ -6,4 +6,8 @@ defmodule Identicon do
   def kansuu do
 
   end
+
+  def third do
+
+  end
 end
