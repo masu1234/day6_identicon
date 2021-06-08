@@ -36,4 +36,16 @@ defmodule Identicon do
   def filter_add_cells(list) do
     Enum.filter(list, &rem(elem(&1, 0), 2) == 0)
   end
+
+  def build_pixel_map(grid) do
+    #%Identicon.Image{grid: grid} = image
+    pixcel_map =
+          Enum.map(grid, fn({_code, index}) ->
+            {top_left, bottom_right} =
+               {{rem(index,5)*50, div(index, 5)*50},{rem(index,5)*50+50, div(index, 5)*50+50}}
+          end)
+    #%Identicon.Image{image | pixcel_map: pixcel_map }
+    end
+
+
 end
