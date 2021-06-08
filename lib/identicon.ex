@@ -1,13 +1,18 @@
 defmodule Identicon do
-  def hash_input do
-
+  def main do
+    str = "Elixir"
+    hashList = hash_input(str)
+    getThree(hashList)
   end
 
-  def kansuu do
+  def hash_input(str) do
+    hash = :crypto.hash(:md5, str)
+      |>:binary.bin_to_list
 
+    %Identicon.Image{hex: hash}
   end
 
-  def third do
-
+  def getThree(list) do
+    Enum.take(list, 3)
   end
 end
