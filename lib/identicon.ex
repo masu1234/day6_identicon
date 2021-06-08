@@ -1,8 +1,8 @@
 defmodule Identicon do
   def main do
     str = "Elixir"
-    hashList = hash_input(str)
-    getThree(hashList)
+    image = hash_input(str)
+    pick_color(image)
   end
 
   def hash_input(str) do
@@ -12,7 +12,11 @@ defmodule Identicon do
     %Identicon.Image{hex: hash}
   end
 
-  def getThree(list) do
-    Enum.take(list, 3)
+  def pick_color(%Identicon.Image{hex: [r, g, b | _tail ]} = image) do
+    %Identicon.Image{image | color: [r, g, b]}
+  end
+
+  def build_grid(list) do
+    Enum.drop(list, -1)
   end
 end
